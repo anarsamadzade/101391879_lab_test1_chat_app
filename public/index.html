@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+    <h1>Chat App</h1>
+
+    <label for="roomSelect">Choose a Room:</label>
+    <select id="roomSelect">
+        <option value="general">General</option>
+        <option value="nodejs">NodeJS</option>
+        <option value="devops">DevOps</option>
+    </select>
+
+    <div id="chatBox" style="height: 300px; overflow-y: auto; border: 1px solid #ddd;"></div>
+    
+    <input id="messageInput" type="text" placeholder="Type a message..." />
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const socket = io("http://localhost:5003");
+        const chatBox = document.getElementById("chatBox");
+        let currentRoom = "general";
+
+        document.getElementById("roomSelect").addEventListener("change", (e) => {
+            currentRoom = e.target.value;
+            chatBox.innerHTML = "";
+            socket.emit("joinRoom", currentRoom);
+        });
+
+        function sendMessage() {
+            const message = document.getElementById("messageInput").value;
+            socket.emit("chatMessage", { from_user: "username", room: currentRoom, message });
+            document.getElementById("messageInput").value = "";
+        }
+
+        socket.on("message", (data) => {
+            const messageElement = document.createElement("div");
+            messageElement.innerHTML = `<strong>${data.from_user}:</strong> ${data.message}`;
+            chatBox.appendChild(messageElement);
+        });
+    </script>
+</body>
+</html>

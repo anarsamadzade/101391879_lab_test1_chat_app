@@ -1,4 +1,4 @@
-# 101391879_lab_test1_chat_app
+# 10139187_chat_app
 
 ## Overview
 This is a chat application built using Node.js, Express, MongoDB, and WebSockets. It allows users to sign up, log in, and send messages in real-time.
